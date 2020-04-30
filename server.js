@@ -3,8 +3,8 @@
 const express = require('express')
 
 // Constants
-const PORT = 7070
-const HOST = '127.0.0.1'
+const PORT = 8080
+const HOST = '0.0.0.0'
 
 // const PORT = 8080       // DATOS PARA EL SEVIDOR
 // const HOST = '0.0.0.0'
