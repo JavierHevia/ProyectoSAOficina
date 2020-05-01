@@ -54,7 +54,7 @@ app.get('/Afiliado', (req, res2) => {
   if (autorizacion) {
     console.log(theUrl.query)
     var json2 = null
-    if (theUrl.query == null) {
+    if (theUrl.query._id == undefined) {
       json2 = null
     } else {
       // var queryObj = queryString.parse(theUrl.query)
@@ -112,8 +112,8 @@ app.post('/Afiliado', (req, res2) => {
   var autorizacion = false
   // console.log(req.body)
   // console.log(req.body.name)
-
-  jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
+  var theUrl = url.parse(req.url, true)
+  jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
     if (err) {
       var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
       res2.send(respuesta)
@@ -132,17 +132,24 @@ app.post('/Afiliado', (req, res2) => {
 
   if (autorizacion) {
     var numram = Math.floor(Math.random() * (999 - 1)) + 1
+    var fov
+    if (theUrl.query.vigente === 'false') {
+      fov = false
+    } else {
+      fov = true
+    }
+    var toindd = parseInt(theUrl.query.tipo)
     var json2 = {
       _id: numram,
       codigo: numram,
-      nombre: req.body.nombre,
-      password: req.body.password,
-      correa: req.body.correa,
-      tipo: req.body.tipo,
-      vigente: req.body.vigente
+      nombre: theUrl.query.nombre,
+      password: theUrl.query.password,
+      correa: theUrl.query.correa,
+      tipo: toindd,
+      vigente: fov
     }
 
-    if (req.body.nombre == '' || req.body.password == '') {
+    if (theUrl.query.nombre == '' || theUrl.query.password == '') {
       var respuesta = JSON.parse('{ "cod":406, "state":"Not Acceptable"}')
       return res2.send(respuesta)
     }
@@ -241,8 +248,14 @@ app.put('/Afiliado', (req, res2) => {
               // console.log(res)
               client.close()
               // var respuesta = JSON.parse('{ "cod":201, "state":"Created"}')
-              var resull = { response: true }
-              res2.send(resull)
+              var sdfe = {
+                  cod: datoid._id,
+                  nombre: theUrl.query.nombre,
+                  vigente: false
+                }
+                res2.send(sdfe)
+              //var resull = { response: true }
+              //res2.send(resull)
             })
             console.log('Conexion Exitosa')
           }
