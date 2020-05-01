@@ -34,24 +34,24 @@ app.get('/', (req, res) => {
 app.get('/Afiliado', (req, res2) => {
   var theUrl = url.parse(req.url, true)
   var autorizacion = false
-  // jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
-  //   if (err) {
-  //     var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
-  //     res2.send(respuesta)
-  //   } else {
-  //     const scope = JSON.parse(decoded.scope)
-  //     // EJEMPLO DE COMO LEER EL SCOPE
-  //     let access = ''
-  //     access = scope.find(element => element.toLowerCase() == 'vehiculo.get')
+  jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
+    if (err) {
+      var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
+      res2.send(respuesta)
+    } else {
+      const scope = JSON.parse(decoded.scope)
+      // EJEMPLO DE COMO LEER EL SCOPE
+      let access = ''
+      access = scope.find(element => element.toLowerCase() == 'vehiculo.get')
 
-  //     if (access != undefined) {
-  //       // SI TIENE ACCESO
-  //       autorizacion = true
-  //     }
-  //   }
-  // })
+      if (access != undefined) {
+        // SI TIENE ACCESO
+        autorizacion = true
+      }
+    }
+  })
 
-  if (!autorizacion) {
+  if (autorizacion) {
     console.log(theUrl.query)
     var json2 = null
     if (theUrl.query == null) {
@@ -62,7 +62,7 @@ app.get('/Afiliado', (req, res2) => {
       var qdata = theUrl.query
       if (qdata.codigo !== undefined) {
         var iddd = parseInt(qdata.codigo)
-        var parajson = '{' + '\"_id\":' + iddd + ',\"contrasena\":' + qdata.password + '}'
+        var parajson = '{' + '\"codigo\":' + iddd + ',\"password\":' + qdata.password + '}'
         json2 = JSON.parse(parajson)
         console.log(json2)
       }
@@ -75,7 +75,6 @@ app.get('/Afiliado', (req, res2) => {
       MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, client) {
         if (err) throw err
         var dbo = client.db('Base1') // .collection('Base1')
-
         if (json == null) {
           dbo.collection('Usuario').find({}).toArray(function (err, res) {
             if (err) throw err
@@ -109,66 +108,106 @@ app.get('/Afiliado', (req, res2) => {
 })
 
 app.use(express.json())
-app.post('/Afiliado', (req, res) => {
+app.post('/Afiliado', (req, res2) => {
+  var autorizacion = false
   // console.log(req.body)
   // console.log(req.body.name)
-  var subastable2 = parseInt(req.body.subastable)
-  var json2 = {
-    nombre: req.body.nombre,
-    password: req.body.password
-  }
 
-  var MongoClient = require('mongodb').MongoClient
-  var uri = 'mongodb://admin1:admin@cluster0-shard-00-00-k6sn1.mongodb.net:27017,cluster0-shard-00-01-k6sn1.mongodb.net:27017,cluster0-shard-00-02-k6sn1.mongodb.net:27017/Base1?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority'
+  jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
+    if (err) {
+      var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
+      res2.send(respuesta)
+    } else {
+      const scope = JSON.parse(decoded.scope)
+      // EJEMPLO DE COMO LEER EL SCOPE
+      let access = ''
+      access = scope.find(element => element.toLowerCase() == 'vehiculo.get')
 
-  function Insert (json) {
-    MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, client) {
-      if (err) throw err
-      var dbo = client.db('Base1') // .collection('Base1')
-      dbo.collection('Usuario').insertOne(json, function (err, _res) {
+      if (access != undefined) {
+        // SI TIENE ACCESO
+        autorizacion = true
+      }
+    }
+  })
+
+  if (autorizacion) {
+    var numram = Math.floor(Math.random() * (999 - 1)) + 1
+    var json2 = {
+      _id: numram,
+      codigo: numram,
+      nombre: req.body.nombre,
+      password: req.body.password,
+      correa: req.body.correa,
+      tipo: req.body.tipo,
+      vigente: req.body.vigente
+    }
+
+    if (req.body.nombre == '' || req.body.password == '') {
+      var respuesta = JSON.parse('{ "cod":406, "state":"Not Acceptable"}')
+      return res2.send(respuesta)
+    }
+
+    var MongoClient = require('mongodb').MongoClient
+    var uri = 'mongodb://admin1:admin@cluster0-shard-00-00-k6sn1.mongodb.net:27017,cluster0-shard-00-01-k6sn1.mongodb.net:27017,cluster0-shard-00-02-k6sn1.mongodb.net:27017/Base1?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority'
+
+    function Insert (json) {
+      MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, function (err, client) {
         if (err) throw err
-        console.log('Dato Insertado Correctamente')
-        client.close()
-        return true
+        var dbo = client.db('Base1') // .collection('Base1')
+        dbo.collection('Usuario').insertOne(json, function (err, _res) {
+          if (err) throw err
+          console.log('Dato Insertado Correctamente')
+          // var respuesta = JSON.parse('{ "codigo":\"'+json2._id+', "nombre":'+json2.nombre+', "vigente":'+false+'}')
+          client.close()
+        })
+        console.log('Conexion Exitosa')
       })
-      console.log('Conexion Exitosa')
-    })
-    return true
+      return true
+    }
+    Insert(json2)
+    var respuesta = JSON.parse('{ "codigo":\"' + json2._id + '\", "nombre":\"' + json2.nombre + '\", "vigente":' + false + '}')
+    var sdfe = {
+      codigo: json2._id,
+      nombre: json2.nombre,
+      vigente: false
+    }
+    res2.send(sdfe)
   }
-  Insert(json2)
-  res.send('Insertado Correctamente')
 })
 
 app.put('/Afiliado', (req, res2) => {
   // console.log(req.body)
   var theUrl = url.parse(req.url, true)
   var autorizacion = false
-  // jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
-  //   if (err) {
-  //     var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
-  //     res2.send(respuesta)
-  //   } else {
-  //     const scope = JSON.parse(decoded.scope)
-  //     // EJEMPLO DE COMO LEER EL SCOPE
-  //     let access = ''
-  //     access = scope.find(element => element.toLowerCase() == 'vehiculo.get')
+  jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
+    if (err) {
+      var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
+      res2.send(respuesta)
+    } else {
+      const scope = JSON.parse(decoded.scope)
+      // EJEMPLO DE COMO LEER EL SCOPE
+      let access = ''
+      access = scope.find(element => element.toLowerCase() == 'vehiculo.get')
 
-  //     if (access != undefined) {
-  //       // SI TIENE ACCESO
-  //       autorizacion = true
-  //     }
-  //   }
-  // })
-  if (!autorizacion) {
+      if (access != undefined) {
+        // SI TIENE ACCESO
+        autorizacion = true
+      }
+    }
+  })
+
+  if (autorizacion) {
     console.log(theUrl.query)
 
     var anews = parseInt(theUrl.query._id)
     var datoid = { _id: anews }
     console.log(datoid)
     var newdato = ''
-    if (theUrl.query.password == undefined && theUrl.query.nombre == undefined) {
+    if (theUrl.query.password == '' && theUrl.query.nombre == '') {
       var estain = parseInt(theUrl.query._id)
       newdato = { $set: { _id: estain } }
+      var respuesta = JSON.parse('{ "cod":406, "state":"Not Acceptable"}')
+      return res2.send(respuesta)
     } else if (theUrl.query.password != undefined && theUrl.query.nombre == undefined) {
       var estain = parseInt(theUrl.query._id)
       newdato = { $set: { _id: estain, password: theUrl.query.password } }
