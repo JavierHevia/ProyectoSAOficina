@@ -42,7 +42,7 @@ app.get('/Afiliado', (req, res2) => {
       const scope = JSON.parse(decoded.scope)
       // EJEMPLO DE COMO LEER EL SCOPE
       let access = ''
-      access = scope.find(element => element.toLowerCase() == 'vehiculo.get')
+      access = scope.find(element => element.toLowerCase() == 'afiliado.get')
 
       if (access != undefined) {
         // SI TIENE ACCESO
@@ -122,7 +122,7 @@ app.post('/Afiliado', (req, res2) => {
       const scope = JSON.parse(decoded.scope)
       // EJEMPLO DE COMO LEER EL SCOPE
       let access = ''
-      access = scope.find(element => element.toLowerCase() == 'vehiculo.get')
+      access = scope.find(element => element.toLowerCase() == 'afiliado.post')
 
       if (access != undefined) {
         // SI TIENE ACCESO
@@ -195,7 +195,7 @@ app.put('/Afiliado', (req, res2) => {
       const scope = JSON.parse(decoded.scope)
       // EJEMPLO DE COMO LEER EL SCOPE
       let access = ''
-      access = scope.find(element => element.toLowerCase() == 'vehiculo.get')
+      access = scope.find(element => element.toLowerCase() == 'afiliado.put')
 
       if (access != undefined) {
         // SI TIENE ACCESO
@@ -279,7 +279,7 @@ app.get('/Pago', (req, res2) => {
       const scope = JSON.parse(decoded.scope)
       // EJEMPLO DE COMO LEER EL SCOPE
       let access = ''
-      access = scope.find(element => element.toLowerCase() == 'vehiculo.get')
+      access = scope.find(element => element.toLowerCase() == 'pago.get')
 
       if (access != undefined) {
         // SI TIENE ACCESO
@@ -357,7 +357,7 @@ app.post('/Pago', (req, res2) => {
       const scope = JSON.parse(decoded.scope)
       // EJEMPLO DE COMO LEER EL SCOPE
       let access = ''
-      access = scope.find(element => element.toLowerCase() == 'vehiculo.get')
+      access = scope.find(element => element.toLowerCase() == 'pago.post')
 
       if (access != undefined) {
         // SI TIENE ACCESO
