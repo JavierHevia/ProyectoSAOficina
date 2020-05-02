@@ -87,7 +87,7 @@ app.get('/Afiliado', (req, res2) => {
             // console.log(res)
             client.close()
             var resull = { response: res }
-            res2.send(resull)
+            res2.send(res)
           })
         } else {
           dbo.collection('Usuario').find(json).toArray(function (err, res) {
@@ -100,7 +100,7 @@ app.get('/Afiliado', (req, res2) => {
               res2.send(respuesta)
             } else {
               var resull = { response: res }
-              res2.send(resull)
+              res2.send(res)
               // res2.send(res)
             }
           })
