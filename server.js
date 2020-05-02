@@ -100,7 +100,7 @@ app.get('/Afiliado', (req, res2) => {
               res2.send(respuesta)
             } else {
               var resull = { response: res }
-              res2.send(res)
+              res2.send(res[0])
               // res2.send(res)
             }
           })
