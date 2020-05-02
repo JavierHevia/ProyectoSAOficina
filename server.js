@@ -22,9 +22,14 @@ const jwt = require('jsonwebtoken')
 const opts = { algorithms: ['RS256'] }
 
 // public key
+// var public_key = '-----BEGIN PUBLIC KEY-----\n' +
+//   'MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAOp7P/J9U+6VN+BQDcIWyzvMPVnqmRz5\n' +
+//   'z6HNUfcDOsSEk2egtxuBBgAF75OlLxMXi/KyNlb5sNy5qIxrTEv8IYMCAwEAAQ==\n' +
+//   '-----END PUBLIC KEY-----\n'
+
 var public_key = '-----BEGIN PUBLIC KEY-----\n' +
-  'MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAOp7P/J9U+6VN+BQDcIWyzvMPVnqmRz5\n' +
-  'z6HNUfcDOsSEk2egtxuBBgAF75OlLxMXi/KyNlb5sNy5qIxrTEv8IYMCAwEAAQ==\n' +
+  'MFswDQYJKoZIhvcNAQEBBQADSgAwRwJAfZxnp+KV2MBblFBpjJJvCLIgUa+5WAaj\n' +
+  ' yn1xq0TD2Inkwqm3vuCXh+nyQUypqcCmSMeuAXULRxl10JbIjEIwmQIDAQAB\n' +
   '-----END PUBLIC KEY-----\n'
 
 app.get('/', (req, res) => {
