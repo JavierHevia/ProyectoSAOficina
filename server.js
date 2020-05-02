@@ -39,24 +39,24 @@ app.get('/', (req, res) => {
 app.get('/Afiliado', (req, res2) => {
   var theUrl = url.parse(req.url, true)
   var autorizacion = false
-  jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
-    if (err) {
-      var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
-      res2.send(respuesta)
-    } else {
-      const scope = JSON.parse(decoded.scope)
-      // EJEMPLO DE COMO LEER EL SCOPE
-      let access = ''
-      access = scope.find(element => element.toLowerCase() == 'afiliado.get')
+  // jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
+  //   if (err) {
+  //     var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
+  //     res2.send(respuesta)
+  //   } else {
+  //     const scope = JSON.parse(decoded.scope)
+  //     // EJEMPLO DE COMO LEER EL SCOPE
+  //     let access = ''
+  //     access = scope.find(element => element.toLowerCase() == 'afiliado.get')
 
-      if (access != undefined) {
-        // SI TIENE ACCESO
-        autorizacion = true
-      }
-    }
-  })
+  //     if (access != undefined) {
+  //       // SI TIENE ACCESO
+  //       autorizacion = true
+  //     }
+  //   }
+  // })
 
-  if (autorizacion) {
+  if (!autorizacion) {
     console.log(theUrl.query)
     var json2 = null
     if (theUrl.query.codigo == undefined) {
@@ -119,24 +119,24 @@ app.post('/Afiliado', (req, res2) => {
   // console.log(req.body)
   // console.log(req.body.name)
   var theUrl = url.parse(req.url, true)
-  jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
-    if (err) {
-      var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
-      res2.send(respuesta)
-    } else {
-      const scope = JSON.parse(decoded.scope)
-      // EJEMPLO DE COMO LEER EL SCOPE
-      let access = ''
-      access = scope.find(element => element.toLowerCase() == 'afiliado.post')
+  // jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
+  //   if (err) {
+  //     var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
+  //     res2.send(respuesta)
+  //   } else {
+  //     const scope = JSON.parse(decoded.scope)
+  //     // EJEMPLO DE COMO LEER EL SCOPE
+  //     let access = ''
+  //     access = scope.find(element => element.toLowerCase() == 'afiliado.post')
 
-      if (access != undefined) {
-        // SI TIENE ACCESO
-        autorizacion = true
-      }
-    }
-  })
+  //     if (access != undefined) {
+  //       // SI TIENE ACCESO
+  //       autorizacion = true
+  //     }
+  //   }
+  // })
 
-  if (autorizacion) {
+  if (!autorizacion) {
     var numram = Math.floor(Math.random() * (999 - 1)) + 1
     var fov
     if (req.body.vigente === 'false') {
@@ -192,24 +192,24 @@ app.put('/Afiliado', (req, res2) => {
   // console.log(req.body)
   var theUrl = url.parse(req.url, true)
   var autorizacion = false
-  jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
-    if (err) {
-      var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
-      res2.send(respuesta)
-    } else {
-      const scope = JSON.parse(decoded.scope)
-      // EJEMPLO DE COMO LEER EL SCOPE
-      let access = ''
-      access = scope.find(element => element.toLowerCase() == 'afiliado.put')
+  // jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
+  //   if (err) {
+  //     var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
+  //     res2.send(respuesta)
+  //   } else {
+  //     const scope = JSON.parse(decoded.scope)
+  //     // EJEMPLO DE COMO LEER EL SCOPE
+  //     let access = ''
+  //     access = scope.find(element => element.toLowerCase() == 'afiliado.put')
 
-      if (access != undefined) {
-        // SI TIENE ACCESO
-        autorizacion = true
-      }
-    }
-  })
+  //     if (access != undefined) {
+  //       // SI TIENE ACCESO
+  //       autorizacion = true
+  //     }
+  //   }
+  // })
 
-  if (autorizacion) {
+  if (!autorizacion) {
     console.log(req.body)
 
     var anews = parseInt(req.body._id)
@@ -276,24 +276,24 @@ app.put('/Afiliado', (req, res2) => {
 app.get('/Pago', (req, res2) => {
   var theUrl = url.parse(req.url, true)
   var autorizacion = false
-  jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
-    if (err) {
-      var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
-      res2.send(respuesta)
-    } else {
-      const scope = JSON.parse(decoded.scope)
-      // EJEMPLO DE COMO LEER EL SCOPE
-      let access = ''
-      access = scope.find(element => element.toLowerCase() == 'pago.get')
+  // jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
+  //   if (err) {
+  //     var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
+  //     res2.send(respuesta)
+  //   } else {
+  //     const scope = JSON.parse(decoded.scope)
+  //     // EJEMPLO DE COMO LEER EL SCOPE
+  //     let access = ''
+  //     access = scope.find(element => element.toLowerCase() == 'pago.get')
 
-      if (access != undefined) {
-        // SI TIENE ACCESO
-        autorizacion = true
-      }
-    }
-  })
+  //     if (access != undefined) {
+  //       // SI TIENE ACCESO
+  //       autorizacion = true
+  //     }
+  //   }
+  // })
 
-  if (autorizacion) {
+  if (!autorizacion) {
     console.log(theUrl.query)
     var json2 = null
     if (theUrl.query.codigo == '') {
@@ -354,23 +354,23 @@ app.post('/Pago', (req, res2) => {
   // console.log(req.body)
   // console.log(req.body.name)
   var theUrl = url.parse(req.url, true)
-  jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
-    if (err) {
-      var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
-      res2.send(respuesta)
-    } else {
-      const scope = JSON.parse(decoded.scope)
-      // EJEMPLO DE COMO LEER EL SCOPE
-      let access = ''
-      access = scope.find(element => element.toLowerCase() == 'pago.post')
+  // jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
+  //   if (err) {
+  //     var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
+  //     res2.send(respuesta)
+  //   } else {
+  //     const scope = JSON.parse(decoded.scope)
+  //     // EJEMPLO DE COMO LEER EL SCOPE
+  //     let access = ''
+  //     access = scope.find(element => element.toLowerCase() == 'pago.post')
 
-      if (access != undefined) {
-        // SI TIENE ACCESO
-        autorizacion = true
-      }
-    }
-  })
-  if (autorizacion) {
+  //     if (access != undefined) {
+  //       // SI TIENE ACCESO
+  //       autorizacion = true
+  //     }
+  //   }
+  // })
+  if (!autorizacion) {
     console.log(req.body)
 
     var anews = parseInt(req.body.codigo)
