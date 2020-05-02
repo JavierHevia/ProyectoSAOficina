@@ -16,7 +16,7 @@ var queryString = require('querystring')
 // App
 const app = express()
 app.use(cors())
-app.use(body_parser.urlencoded({ extended:true }))
+app.use(body_parser.urlencoded({ extended: true }))
 // jwt
 const jwt = require('jsonwebtoken')
 const opts = { algorithms: ['RS256'] }
@@ -54,7 +54,7 @@ app.get('/Afiliado', (req, res2) => {
   if (autorizacion) {
     console.log(theUrl.query)
     var json2 = null
-    if (theUrl.query._id == undefined) {
+    if (theUrl.query.codigo == undefined) {
       json2 = null
     } else {
       // var queryObj = queryString.parse(theUrl.query)
@@ -62,7 +62,7 @@ app.get('/Afiliado', (req, res2) => {
       var qdata = theUrl.query
       if (qdata.codigo !== undefined) {
         var iddd = parseInt(qdata.codigo)
-        var parajson = '{' + '\"codigo\":' + iddd + ',\"password\":' + qdata.password + '}'
+        var parajson = '{' + '\"codigo\":' + iddd + ',\"password\":\"' + qdata.password + '\"}'
         json2 = JSON.parse(parajson)
         console.log(json2)
       }
@@ -85,7 +85,7 @@ app.get('/Afiliado', (req, res2) => {
             res2.send(resull)
           })
         } else {
-          dbo.collection('Inventario').find(json).toArray(function (err, res) {
+          dbo.collection('Usuario').find(json).toArray(function (err, res) {
             if (err) throw err
             console.log('Dato Encontrado Correctamente find')
             // console.log(res)
@@ -110,7 +110,7 @@ app.get('/Afiliado', (req, res2) => {
 app.use(express.json())
 app.post('/Afiliado', (req, res2) => {
   var autorizacion = false
-  //req.body
+  // req.body
   // console.log(req.body)
   // console.log(req.body.name)
   var theUrl = url.parse(req.url, true)
@@ -250,13 +250,13 @@ app.put('/Afiliado', (req, res2) => {
               client.close()
               // var respuesta = JSON.parse('{ "cod":201, "state":"Created"}')
               var sdfe = {
-                  cod: datoid._id,
-                  nombre: req.body.nombre,
-                  vigente: false
-                }
-                res2.send(sdfe)
-              //var resull = { response: true }
-              //res2.send(resull)
+                cod: datoid._id,
+                nombre: req.body.nombre,
+                vigente: false
+              }
+              res2.send(sdfe)
+              // var resull = { response: true }
+              // res2.send(resull)
             })
             console.log('Conexion Exitosa')
           }
@@ -291,7 +291,7 @@ app.get('/Pago', (req, res2) => {
   if (autorizacion) {
     console.log(theUrl.query)
     var json2 = null
-    if (theUrl.query.codigo == "") {
+    if (theUrl.query.codigo == '') {
       json2 = null
     } else {
       // var queryObj = queryString.parse(theUrl.query)
@@ -384,12 +384,17 @@ app.post('/Pago', (req, res2) => {
       var mmi = hoy.getMinutes()
       var ss = hoy.getSeconds()
 
-      var fechas = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + mmi + ':' + ss 
+      var fechas = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + mmi + ':' + ss
 
       var estain = parseInt(req.body.codigo)
       var mmonto = parseFloat(req.body.monto)
       newdato = { $set: { _id: estain, monto: mmonto, fecha: fechas } }
-    } 
+      if (req.body.vigente == 'true') {
+        newdato = { $set: { _id: estain, monto: mmonto, fecha: fechas, vigente: true } }
+      } else if (req.body.vigente == 'false') {
+        newdato = { $set: { _id: estain, monto: mmonto, fecha: fechas, vigente: false} }
+      }
+    }
     // newdato = { $set: { estado: req.body.estado, afiliado: req.body.afiliado_adjudicado, valor_adjudicado: req.body.valor_adjudicado } }
     console.log(newdato)
 
@@ -417,13 +422,13 @@ app.post('/Pago', (req, res2) => {
               client.close()
               // var respuesta = JSON.parse('{ "cod":201, "state":"Created"}')
               var sdfe = {
-                  cod: datoid._id,
-                  nombre: req.body.nombre,
-                  vigente: false
-                }
-                res2.send(sdfe)
-              //var resull = { response: true }
-              //res2.send(resull)
+                cod: datoid._id,
+                nombre: req.body.nombre,
+                vigente: false
+              }
+              res2.send(sdfe)
+              // var resull = { response: true }
+              // res2.send(resull)
             })
             console.log('Conexion Exitosa')
           }
