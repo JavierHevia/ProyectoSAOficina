@@ -1,7 +1,7 @@
 'use strict'
 
 const express = require('express')
-
+var body_parser = require('body-parser')
 // Constants
 const PORT = 8080
 const HOST = '0.0.0.0'
@@ -16,7 +16,7 @@ var queryString = require('querystring')
 // App
 const app = express()
 app.use(cors())
-
+app.use(body_parser.urlencoded({ extended:true }))
 // jwt
 const jwt = require('jsonwebtoken')
 const opts = { algorithms: ['RS256'] }
@@ -110,10 +110,11 @@ app.get('/Afiliado', (req, res2) => {
 app.use(express.json())
 app.post('/Afiliado', (req, res2) => {
   var autorizacion = false
+  //req.body
   // console.log(req.body)
   // console.log(req.body.name)
   var theUrl = url.parse(req.url, true)
-  jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
+  jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
     if (err) {
       var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
       res2.send(respuesta)
@@ -133,23 +134,23 @@ app.post('/Afiliado', (req, res2) => {
   if (autorizacion) {
     var numram = Math.floor(Math.random() * (999 - 1)) + 1
     var fov
-    if (theUrl.query.vigente === 'false') {
+    if (req.body.vigente === 'false') {
       fov = false
     } else {
       fov = true
     }
-    var toindd = parseInt(theUrl.query.tipo)
+    var toindd = parseInt(req.body.tipo)
     var json2 = {
       _id: numram,
       codigo: numram,
-      nombre: theUrl.query.nombre,
-      password: theUrl.query.password,
-      correa: theUrl.query.correa,
+      nombre: req.body.nombre,
+      password: req.body.password,
+      correa: req.body.correa,
       tipo: toindd,
       vigente: fov
     }
 
-    if (theUrl.query.nombre == '' || theUrl.query.password == '') {
+    if (req.body.nombre == '' || req.body.password == '') {
       var respuesta = JSON.parse('{ "cod":406, "state":"Not Acceptable"}')
       return res2.send(respuesta)
     }
@@ -186,7 +187,7 @@ app.put('/Afiliado', (req, res2) => {
   // console.log(req.body)
   var theUrl = url.parse(req.url, true)
   var autorizacion = false
-  jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
+  jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
     if (err) {
       var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
       res2.send(respuesta)
@@ -204,25 +205,25 @@ app.put('/Afiliado', (req, res2) => {
   })
 
   if (autorizacion) {
-    console.log(theUrl.query)
+    console.log(req.body)
 
-    var anews = parseInt(theUrl.query._id)
+    var anews = parseInt(req.body._id)
     var datoid = { _id: anews }
     console.log(datoid)
     var newdato = ''
-    if (theUrl.query.password == '' && theUrl.query.nombre == '') {
-      var estain = parseInt(theUrl.query._id)
+    if (req.body.password == '' && req.body.nombre == '') {
+      var estain = parseInt(req.body._id)
       newdato = { $set: { _id: estain } }
       var respuesta = JSON.parse('{ "cod":406, "state":"Not Acceptable"}')
       return res2.send(respuesta)
-    } else if (theUrl.query.password != undefined && theUrl.query.nombre == undefined) {
-      var estain = parseInt(theUrl.query._id)
-      newdato = { $set: { _id: estain, password: theUrl.query.password } }
-    } else if (theUrl.query.password != undefined && theUrl.query.nombre != undefined) {
-      var estain = parseInt(theUrl.query._id)
-      newdato = { $set: { _id: estain, password: theUrl.query.password, nombre: theUrl.query.nombre } }
+    } else if (req.body.password != undefined && req.body.nombre == undefined) {
+      var estain = parseInt(req.body._id)
+      newdato = { $set: { _id: estain, password: req.body.password } }
+    } else if (req.body.password != undefined && req.body.nombre != undefined) {
+      var estain = parseInt(req.body._id)
+      newdato = { $set: { _id: estain, password: req.body.password, nombre: req.body.nombre } }
     }
-    // newdato = { $set: { estado: theUrl.query.estado, afiliado: theUrl.query.afiliado_adjudicado, valor_adjudicado: theUrl.query.valor_adjudicado } }
+    // newdato = { $set: { estado: req.body.estado, afiliado: req.body.afiliado_adjudicado, valor_adjudicado: req.body.valor_adjudicado } }
     console.log(newdato)
 
     var MongoClient = require('mongodb').MongoClient
@@ -250,7 +251,7 @@ app.put('/Afiliado', (req, res2) => {
               // var respuesta = JSON.parse('{ "cod":201, "state":"Created"}')
               var sdfe = {
                   cod: datoid._id,
-                  nombre: theUrl.query.nombre,
+                  nombre: req.body.nombre,
                   vigente: false
                 }
                 res2.send(sdfe)
@@ -348,7 +349,7 @@ app.post('/Pago', (req, res2) => {
   // console.log(req.body)
   // console.log(req.body.name)
   var theUrl = url.parse(req.url, true)
-  jwt.verify(theUrl.query.jwt, public_key, opts, function (err, decoded) {
+  jwt.verify(req.body.jwt, public_key, opts, function (err, decoded) {
     if (err) {
       var respuesta = JSON.parse('{ "cod":403, "err":"El JWT no es valido o no contiene el scope de este servicio"}')
       res2.send(respuesta)
@@ -365,13 +366,13 @@ app.post('/Pago', (req, res2) => {
     }
   })
   if (autorizacion) {
-    console.log(theUrl.query)
+    console.log(req.body)
 
-    var anews = parseInt(theUrl.query.codigo)
+    var anews = parseInt(req.body.codigo)
     var datoid = { _id: anews }
     console.log(datoid)
     var newdato = ''
-    if (theUrl.query.monto == '') {
+    if (req.body.monto == '') {
       var respuesta = JSON.parse('{ "cod":406, "state":"Not Acceptable"}')
       return res2.send(respuesta)
     } else {
@@ -385,11 +386,11 @@ app.post('/Pago', (req, res2) => {
 
       var fechas = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + mmi + ':' + ss 
 
-      var estain = parseInt(theUrl.query.codigo)
-      var mmonto = parseFloat(theUrl.query.monto)
+      var estain = parseInt(req.body.codigo)
+      var mmonto = parseFloat(req.body.monto)
       newdato = { $set: { _id: estain, monto: mmonto, fecha: fechas } }
     } 
-    // newdato = { $set: { estado: theUrl.query.estado, afiliado: theUrl.query.afiliado_adjudicado, valor_adjudicado: theUrl.query.valor_adjudicado } }
+    // newdato = { $set: { estado: req.body.estado, afiliado: req.body.afiliado_adjudicado, valor_adjudicado: req.body.valor_adjudicado } }
     console.log(newdato)
 
     var MongoClient = require('mongodb').MongoClient
@@ -417,7 +418,7 @@ app.post('/Pago', (req, res2) => {
               // var respuesta = JSON.parse('{ "cod":201, "state":"Created"}')
               var sdfe = {
                   cod: datoid._id,
-                  nombre: theUrl.query.nombre,
+                  nombre: req.body.nombre,
                   vigente: false
                 }
                 res2.send(sdfe)
